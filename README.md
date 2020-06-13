@@ -1,2 +1,4 @@
-# wp-simple-user
-Create Wordpress users simply through their names
+# Wordpress Simple User Plugin
+
+Create Wordpress users simply by their names
+
