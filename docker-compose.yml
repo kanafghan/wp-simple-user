@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  wordpress:
+    image: wordpress:5.3.2-php7.4-apache
+    container_name: wp-5.3.2
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_PASSWORD: kanafghan
+    volumes:
+      - "./simple-user:/var/www/html/wp-content/plugins/simple-user"
+      - wp_data:/var/www/html
+    networks:
+      - wp-simple-user
+
+  db:
+    image: mysql:5.7
+    container_name: db-wp-5.3.2
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: kanafghan
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - wp-simple-user
+
+networks:
+  wp-simple-user:
+
+volumes:
+  wp_data:
+  db_data:
