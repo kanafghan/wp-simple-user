@@ -1,32 +1,35 @@
-(function( $ ) {
+(function( $, ajax ) {
 	'use strict';
+	var CREATE_FORM = 'form#Simple-User--createuser';
+	var SUBMIT_BUTTON = '#Simple-User--createuser-submit';
 
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+	function disableSubmitButton() {
+		$(SUBMIT_BUTTON).prop('disabled', true);
+	}
 
-})( jQuery );
+	function enableSubmitButton() {
+		$(SUBMIT_BUTTON).prop('disabled', false);
+	}
+
+	function createUserHandler(event) {
+		event.preventDefault();
+		console.log('From submitted!');
+		disableSubmitButton();
+
+		// setTimeout(function () { enableSubmitButton(); }, 2000);
+		$.post(ajax.ajax_url, {
+			_ajax_nonce: ajax.nonce,
+			action: 'simple_user_create_user',
+			echo: 'It is working!',
+		}, function (data) {
+			enableSubmitButton();
+
+			console.log('Data: ', data);
+			$('#ajax-response').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
+		}).fail(function (err) {
+			console.log('Failed:', err);
+		});
+	}
+
+	$(CREATE_FORM).submit(createUserHandler);
+})( jQuery, simple_user_ajax );

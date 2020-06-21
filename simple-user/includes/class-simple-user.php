@@ -157,6 +157,10 @@ class Simple_User {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
+
+		$this->loader->add_action( 'wp_ajax_simple_user_create_user', $plugin_admin , 'create_user_ajax_handler' );
+
 	}
 
 	/**

@@ -96,8 +96,32 @@ class Simple_User_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/simple-user-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/simple-user-admin.js', array( 'jquery' ), $this->version, true );
+
+		$create_user_nonce = wp_create_nonce( 'create_user' );
+		wp_localize_script( $this->plugin_name, 'simple_user_ajax', array(
+			'ajax_url' => admin_url('admin-ajax.php'),
+			'nonce'    => $create_user_nonce,
+		) );
 
 	}
 
+	public function add_menu() {
+		add_users_page(
+			__( 'Add Simple User', $this->plugin_name ),
+			__( 'Add Simple User', $this->plugin_name ),
+			'create_users',
+			'simple-user-manager',
+			array( $this, 'users_page' )
+		);
+	}
+
+	public function users_page() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/simple-user-admin-display.php';
+	}
+
+	public function create_user_ajax_handler() {
+		check_ajax_referer( 'create_user' );
+		wp_send_json_success( array( 'echo' => $_POST['echo'] ) , 200 );
+	}
 }

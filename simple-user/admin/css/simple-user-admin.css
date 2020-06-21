@@ -2,3 +2,11 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+#Simple-User--createuser .form-table input {
+  width: 25em;
+}
+
+#Simple-User--createuser .form-table th {
+  width: 100px;
+}
