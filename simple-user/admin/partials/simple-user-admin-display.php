@@ -14,16 +14,34 @@
 ?>
 
 <div class="wrap">
-    <h1 id="simple-user-manager-title"><?php echo esc_html( get_admin_page_title() ); ?></h1>
+    <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
     <!-- class="notice notice-success is-dismissable" -->
-    <div id="ajax-response"></div>
+    <div id="Simple-User--ajax-response"></div>
+
+    <div id="Simple-User--messages">
+        <div id="Simple-User--error-invalid-form">
+            <p>
+                <?php _e('Please fill the form correctly by providing both first and last name.', 'simple-user') ?>
+            </p>
+        </div>
+
+        <div id="Simple-User--error-not-created">
+            <p>
+                <?php _e('Something went wrong and the user could not be created. Please try again.', 'simple-user') ?>
+            </p>
+        </div>
+
+        <div id="Simple-User--success">
+            <p>
+                <?php _e('The user was added successfully.', 'simple-user') ?>
+            </p>
+        </div>
+    </div>
 
     <p><?php _e('Create a new user simply by his/her first name, last name and role.', 'simple-user') ?></p>
 
     <form id="Simple-User--createuser">
-        <input type="hidden" name="simple-user-form" id="input-simple-user" class="form-control" value="Testing!">
-
         <table class="form-table" role="presentation">
             <tbody>
                 <!-- First Name -->

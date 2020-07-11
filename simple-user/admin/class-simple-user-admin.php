@@ -122,6 +122,64 @@ class Simple_User_Admin {
 
 	public function create_user_ajax_handler() {
 		check_ajax_referer( 'create_user' );
-		wp_send_json_success( array( 'echo' => $_POST['echo'] ) , 200 );
+		try {
+			$first_name = sanitize_text_field($_POST['first_name']);
+			$last_name = sanitize_text_field($_POST['last_name']);
+			$role = sanitize_text_field($_POST['role']);
+
+			if (empty($first_name) || empty($last_name) || empty($role)) {
+				wp_send_json_error(array( 'error' => 'Invalid or empty first name, last name or role!'), 400);
+
+				return;
+			}
+
+			$result = $this->create_user($first_name, $last_name, $role);
+
+			if ($result === TRUE) {
+				wp_send_json_success();
+			} else {
+				wp_send_json_error(array( 'error' => $result), 500);
+			}
+		} catch (Exception $e) {
+			wp_send_json_error(array( 'error' => $e->getMessage()), 500);
+		}
+	}
+
+	protected function create_user($first_name, $last_name, $role) {
+		$username = $this->generate_username($first_name, $last_name);
+		$password = $this->generate_password();
+		$email_address = $this->generate_email($username);
+
+		$userdata = array(
+			'user_pass'    => $password,
+			'user_login'   => $username,
+			'user_email'   => $email_address,
+			'display_name' => $first_name . ' ' . $last_name,
+			'first_name'   => $first_name,
+			'last_name'    => $last_name,
+			'role'         => $role,
+		);
+
+		$result = wp_insert_user($userdata);
+		if (is_wp_error($result)) {
+			return $result->get_error_message();
+		}
+
+		return TRUE;
+	}
+
+	protected function generate_username($first_name, $last_name) {
+		// TODO: Construct a random username based on first and last name that does not already exist (in lower case)
+		return preg_replace('/[^a-zA-Z]+/i', '', $first_name . $last_name);
+	}
+
+	protected function generate_password() {
+		// TODO: Construct a random password
+		return wp_generate_password();
+	}
+
+	protected function generate_email($username) {
+		// TODO: Construct a random email address that does not already exist (in lower case)
+		return $username . '@simpleuser.net';
 	}
 }
