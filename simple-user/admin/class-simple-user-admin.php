@@ -169,17 +169,32 @@ class Simple_User_Admin {
 	}
 
 	protected function generate_username($first_name, $last_name) {
-		// TODO: Construct a random username based on first and last name that does not already exist (in lower case)
-		return preg_replace('/[^a-zA-Z]+/i', '', $first_name . $last_name);
+		$chars = strtolower(preg_replace('/[^a-z]+/i', '', $first_name . $last_name));
+
+		$username = $this->generate_random_string($chars);
+		while (username_exists($username)) {
+			$username = $this->generate_random_string($chars);
+		}
+
+		return $username;
 	}
 
 	protected function generate_password() {
-		// TODO: Construct a random password
 		return wp_generate_password();
 	}
 
 	protected function generate_email($username) {
-		// TODO: Construct a random email address that does not already exist (in lower case)
 		return $username . '@simpleuser.net';
 	}
+
+	private function generate_random_string($chars, $length = 10) {
+		$total = strlen($chars);
+		$random_string = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $random_string .= $chars[rand(0, $total - 1)];
+		}
+
+        return $random_string;
+    }
 }
